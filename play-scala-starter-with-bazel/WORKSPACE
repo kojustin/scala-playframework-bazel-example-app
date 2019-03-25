@@ -1,0 +1,49 @@
+# WORKSPACE: This is a Bazel workspace file. The presence of this file defines
+# a Bazel workspace rooted in this directory.
+
+workspace(name = "play-scala-starter-with-bazel")
+
+#
+# Scala rules
+#
+
+# master of https://github.com/bazelbuild/rules_scala on 2019.03.24.
+rules_scala_version = "ebc32f0e45a3fdd94b425fd7fcd10be05226795a"
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "io_bazel_rules_scala",
+    strip_prefix = "rules_scala-%s" % rules_scala_version,
+    type = "zip",
+    url = "https://github.com/bazelbuild/rules_scala/archive/%s.zip" % rules_scala_version,
+)
+
+load("@io_bazel_rules_scala//scala:scala.bzl", "scala_repositories")
+load("@io_bazel_rules_scala//scala:toolchains.bzl", "scala_register_toolchains")
+
+scala_register_toolchains()
+
+# The default Scala version provided by rules_scala is 2.11, we update to the
+# newest stable by specifying newer versions.
+scala_repositories((
+    "2.12.8",
+    {
+        "scala_compiler": "f34e9119f45abd41e85b9e121ba19dd9288b3b4af7f7047e86dc70236708d170",
+        "scala_library": "321fb55685635c931eba4bc0d7668349da3f2c09aee2de93a70566066ff25c28",
+        "scala_reflect": "4d6405395c4599ce04cea08ba082339e3e42135de9aae2923c9f5367e957315a",
+    },
+))
+
+#
+# bazel-deps
+#
+
+# load the build definitions created by running Bazel deps. 
+load("//3rdparty:workspace.bzl", "maven_dependencies")
+
+maven_dependencies()
+
+#
+# rules_play_routes
+#

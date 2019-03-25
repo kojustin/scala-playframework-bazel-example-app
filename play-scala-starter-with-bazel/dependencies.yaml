@@ -1,0 +1,45 @@
+# bazel-deps dependency file, declare your maven artifact dependencies in here
+# and use bazel-deps to generate a set of Bazel BUILD definitions. bazel-deps
+# understands the Scala 2.11 vs 2.12 maven artifact naming convention, so you
+# do NOT need to add the "_2.11", "_2.12" extensions to your artifact names.
+# See https://github.com/johnynek/bazel-deps for a description of the file
+# format.
+
+# For a comprehensive list of all available options, see
+#   https://github.com/johnynek/bazel-deps#options
+options:
+  languages: ["scala:2.12.8"]
+  buildHeader: [ "load(\"@io_bazel_rules_scala//scala:scala_import.bzl\", \"scala_import\")" ]
+
+dependencies:
+  # The PlayScala plugin adds all these library dependencies for you in sbt. 
+  # You'll need to add them here.
+  com.typesafe.play:
+    play:
+      lang: scala
+      version: 2.7.0
+      modules: ['', akka-http-server, guice, logback]
+    routes-compiler:
+      lang: scala
+      version: 2.7.0
+    filters-helpers:
+      version: 2.7.0
+      lang: scala
+
+  # Replaces this line in build.sbt:
+  #     libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.1" % Test
+  org.scalatestplus.play:
+    scalatestplus-play:
+      version: 4.0.1
+      lang: scala
+
+  # Replaces this line in build.sbt:
+  #     libraryDependencies += "com.h2database" % "h2" % "1.4.197"
+  #
+  # NOTE: H2 is a pure Java library, we need to make sure to set the language
+  # to "java" here.
+  com.h2database:
+    h2:
+      version: 1.4.197
+      lang: java
+
