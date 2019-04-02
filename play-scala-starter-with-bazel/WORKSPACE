@@ -1,7 +1,7 @@
 # WORKSPACE: This is a Bazel workspace file. The presence of this file defines
 # a Bazel workspace rooted in this directory.
 
-workspace(name = "play-scala-starter-with-bazel")
+workspace(name = "play_scala_starter_with_bazel")
 
 #
 # Scala rules

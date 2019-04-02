@@ -24,24 +24,6 @@ how the individual parts of a Play application could be built, but there wasn't
 a complete, working example showing how all the pieces fit together and
 documenting how they work.
 
-A [simple Play application's source files][anatomy] are laid out in a
-directory structure that looks like this.
-
-```
-MY_PLAY_SBT_PROJECT
-├── app/
-│   ├── controllers/
-│   ├── models/
-│   └── views/
-├── build.sbt
-├── conf
-│   ├── application.conf
-│   └── routes
-├── project/
-│   ├── build.properties
-│   └── plugins.sbt
-└── target/
-```
 
 The [Play Scala Starter application][starter] demonstrates the basics of how to
 integrate
@@ -142,14 +124,28 @@ $BAZEL_DEPS/gen_maven_deps.sh generate -r $(pwd) -s 3rdparty/workspace.bzl -d de
 
 ## <a name="routes">Compiling Play Routes</a>
 The [sbt play plugin][playbs] integrates a lot of functionality into the build
-tool, the plugin is responsible for adding all your library dependencies,
-dealing with the typical directory layout structure, and compiling routes files
-and twirl templates into code that the Scala compiler can ingest.
+environment. It automatically compiles routes files into Scala code that the
+Scala compiler can build with.
 
 [playbs]: https://www.playframework.com/documentation/2.7.x/BuildOverview
 
+The Play Framework codebase contains some code to compile routes files into
+Scala code. There are a [few][lucid] [different][diff] approaches to integrating
+that compiler with Bazel.
 
-[anatomy]: https://www.playframework.com/documentation/2.7.x/Anatomy
+[lucid]: https://github.com/lucidsoftware/rules_play_routes
+[diff]: https://github.com/thundergolfer/rules_play_routes
+
+Currently, there is not an easy way to depend on `rules_play_routes` in another
+Bazel project. You'll need to clone the repository to your local machine to
+some path, say `BAZEL_DEPS`.
+
+```bash
+cd $BAZEL_DEPS
+bazel build //:parse
+```
+
+
 
 ## <a name="motivation">Motivation</a>
 
@@ -173,4 +169,13 @@ For someone trying to port an Scala/Play/sbt project to Bazel the main
 difficulties will be dealing with dependencies and
 
 
-This was a similar effort https://github.com/akashdayal/play-scala-rest-api-example-2.5.x-bazel
+**More References:**
+
+- [Anatomy of a simple Play application's][anatomy]: source file layout of a
+  simple Play application.
+- [play-scala-rest-api-example-2.5.x-bazel][akashdayal]: a previous example of
+  a simple Play application building with Bazel, unmaintained and no longer
+  builds.
+
+[anatomy]: https://www.playframework.com/documentation/2.7.x/Anatomy
+[akashdayal]: https://github.com/akashdayal/play-scala-rest-api-example-2.5.x-bazel
